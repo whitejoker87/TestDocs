@@ -1,62 +1,35 @@
 package ru.orehovai.testdocs;
 
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AllDocsListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AllDocsListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AllDocsListFragment extends Fragment {
+
+public class AllDocsListFragment extends Fragment implements MainContract.MainView {
 
     public static final String ARG_PAGE = "ARG_PAGE";
-
-//    // TODO: Rename parameter arguments, choose names that match
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-//
-//    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-
-//    private OnFragmentInteractionListener mListener;
 
     private List<Doc> allDocs;
     private RecyclerView listAllDocs;
 
     private int mDoc;
 
-    public AllDocsListFragment() {
-        // Required empty public constructor
-    }
+    private MainContract.Presenter presenter;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param page page of viewpager
-     * @return A new instance of fragment AllDocsListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static AllDocsListFragment newInstance(int page) {
         AllDocsListFragment fragment = new AllDocsListFragment();
         Bundle args = new Bundle();
@@ -71,6 +44,8 @@ public class AllDocsListFragment extends Fragment {
         if (getArguments() != null) {
             mDoc = getArguments().getInt(ARG_PAGE);
         }
+        presenter = new MainPresenterImpl(this, new GetNoticeIntractorImpl());
+//        presenter.requestDataFromServer();
     }
 
     @Override
@@ -98,11 +73,12 @@ public class AllDocsListFragment extends Fragment {
 //        }
 //    }
 //
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        presenter.onDestroy();
+        //mListener = null;
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -123,11 +99,50 @@ public class AllDocsListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        allDocs = ((MainActivity)getActivity()).getAllDocs();
+        //allDocs = ((MainActivity)getActivity()).getAllDocs();
 
         listAllDocs = Objects.requireNonNull(getActivity()).findViewById(R.id.recycler_docs);
         listAllDocs.setLayoutManager(new LinearLayoutManager(getActivity()));
-        listAllDocs.setAdapter(new AllDocsListAdapter(allDocs));
+        //listAllDocs.setAdapter(new AllDocsListAdapter(allDocs, getActivity().getFragmentManager(), recyclerItemClickListener));
+        presenter.requestDataFromServer();
 
     }
+
+    /**
+     * RecyclerItem click event listener
+     * */
+    private RecyclerItemClickListener recyclerItemClickListener = new RecyclerItemClickListener() {
+        @Override
+        public void onItemClick(Doc doc) {
+
+            Toast.makeText(getActivity(),
+                    "List title:  " + doc.getName(),
+                    Toast.LENGTH_LONG).show();
+
+        }
+    };
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void setDataToRecyclerView(List<Doc> noticeArrayList) {
+
+        AllDocsListAdapter adapter = new AllDocsListAdapter(noticeArrayList , getActivity().getFragmentManager(), recyclerItemClickListener);
+        listAllDocs.setAdapter(adapter);
+
+    }
+
+    @Override
+    public void onResponseFailure(Throwable throwable) {
+
+    }
+
 }

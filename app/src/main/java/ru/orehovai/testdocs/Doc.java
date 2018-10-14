@@ -2,14 +2,19 @@ package ru.orehovai.testdocs;
 
 public class Doc {
 
-    private String title, date, size;
+    private String name;
+    private String id;
+    private String type;
+    private String link;
+    private String date;
+    private String size;
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDate() {

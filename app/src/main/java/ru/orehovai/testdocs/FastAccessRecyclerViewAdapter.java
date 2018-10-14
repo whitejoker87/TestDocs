@@ -1,5 +1,6 @@
 package ru.orehovai.testdocs;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +16,12 @@ public class FastAccessRecyclerViewAdapter extends RecyclerView.Adapter<FastAcce
     Context context;
     List<Doc> fastAcessDocs;
 
-    public FastAccessRecyclerViewAdapter(Context context, List<Doc> fastAccessDocs) {
+    private RecyclerItemClickListener recyclerItemClickListener;
+
+    public FastAccessRecyclerViewAdapter(Context context, List<Doc> fastAccessDocs, RecyclerItemClickListener recyclerItemClickListener) {
         this.context = context;
         this.fastAcessDocs = fastAccessDocs;
+        this.recyclerItemClickListener = recyclerItemClickListener;
     }
 
     @NonNull
@@ -27,9 +31,15 @@ public class FastAccessRecyclerViewAdapter extends RecyclerView.Adapter<FastAcce
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FastAccessHolder holder, int position) {
-        holder.tvFileName.setText(fastAcessDocs.get(position).getTitle());
+    public void onBindViewHolder(@NonNull FastAccessHolder holder, @SuppressLint("RecyclerView") final int position) {
+        holder.tvFileName.setText(fastAcessDocs.get(position).getName());
         holder.tvDate.setText(fastAcessDocs.get(position).getDate());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerItemClickListener.onItemClick(fastAcessDocs.get(position));
+            }
+        });
     }
 
     @Override
