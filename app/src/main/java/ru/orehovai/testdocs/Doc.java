@@ -13,8 +13,16 @@ public class Doc {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getType() {
+        return type;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getDate() {

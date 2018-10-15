@@ -24,16 +24,17 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toEndOf="@+id/iv_decription_item_all_docs_list"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="название файла" />
 
     <ImageView
         android:id="@+id/iv_date_item_all_docs_list"
-        android:layout_width="20dp"
+        android:layout_width="10dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@+id/iv_decription_item_all_docs_list"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_item_all_docs_list"
         app:srcCompat="@drawable/baseline_access_time_24" />
@@ -44,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="10sp"
         app:layout_constraintStart_toEndOf="@+id/iv_date_item_all_docs_list"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_item_all_docs_list"
         tools:text="дата" />
@@ -55,6 +57,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="\u2022"
+        android:textSize="10sp"
         app:layout_constraintStart_toEndOf="@+id/tv_date_item_all_docs_list"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_item_all_docs_list" />
 
@@ -64,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="10sp"
         app:layout_constraintStart_toEndOf="@+id/tv_dot_item_all_docs_list"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_item_all_docs_list"
         tools:text="размер" />

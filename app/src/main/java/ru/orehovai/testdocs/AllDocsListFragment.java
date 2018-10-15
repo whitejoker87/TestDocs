@@ -1,11 +1,12 @@
 package ru.orehovai.testdocs;
 
-import android.support.v4.app.Fragment;
-import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,17 +15,19 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 
 
-public class AllDocsListFragment extends Fragment implements MainContract.MainView {
+public class AllDocsListFragment extends Fragment implements MainContract.MainView, MainContract.ItemListView {
 
     public static final String ARG_PAGE = "ARG_PAGE";
 
-    private List<Doc> allDocs;
-    private RecyclerView listAllDocs;
+    private RecyclerView recyclerAllDocs;
+
+    private List<Doc> allDocList;
 
     private int mDoc;
 
@@ -44,67 +47,33 @@ public class AllDocsListFragment extends Fragment implements MainContract.MainVi
         if (getArguments() != null) {
             mDoc = getArguments().getInt(ARG_PAGE);
         }
-        presenter = new MainPresenterImpl(this, new GetNoticeIntractorImpl());
-//        presenter.requestDataFromServer();
+        presenter = new MainPresenterImpl(this, this, new GetDocsInteractorImpl());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_all_docs_list, container, false);
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
     @Override
     public void onDetach() {
         super.onDetach();
         presenter.onDestroy();
-        //mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //allDocs = ((MainActivity)getActivity()).getAllDocs();
+        recyclerAllDocs = Objects.requireNonNull(getActivity()).findViewById(R.id.recycler_docs);
+        recyclerAllDocs.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        listAllDocs = Objects.requireNonNull(getActivity()).findViewById(R.id.recycler_docs);
-        listAllDocs.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //listAllDocs.setAdapter(new AllDocsListAdapter(allDocs, getActivity().getFragmentManager(), recyclerItemClickListener));
-        presenter.requestDataFromServer();
+        presenter.requestDocsListFromServer();
+        if (mDoc == 2){
+            presenter.requestFavDocsListFromServer();
+        }
 
     }
 
@@ -115,12 +84,57 @@ public class AllDocsListFragment extends Fragment implements MainContract.MainVi
         @Override
         public void onItemClick(Doc doc) {
 
-            Toast.makeText(getActivity(),
-                    "List title:  " + doc.getName(),
-                    Toast.LENGTH_LONG).show();
+            presenter.requestDocFromServer(doc.getId());
 
         }
     };
+
+    @Override
+    public void setDataToRecyclerView(List<Doc> allDocsList) {
+        if (mDoc == 2) {
+            allDocList = allDocsList;
+            return;
+        }
+
+        AllDocsListAdapter adapter = new AllDocsListAdapter(allDocsList , Objects.requireNonNull(getActivity()).getFragmentManager(), recyclerItemClickListener);
+        recyclerAllDocs.setAdapter(adapter);
+
+    }
+
+    @Override
+    public void openDocInBrowser(Doc doc) {
+        Uri url;
+        String[] forOpenInBrowser = {"link", "html", "jpg", "png"};
+        if(Arrays.asList(forOpenInBrowser).contains(doc.getType())) {
+            url = Uri.parse(doc.getLink());
+        } else url = Uri.parse("https://docs.google.com/viewerng/viewer?url=" + doc.getLink());
+        Intent urlIntent = new Intent(Intent.ACTION_VIEW, url);
+        // Проверка на споссобность обработать intent
+        PackageManager packageManager = Objects.requireNonNull(getActivity()).getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(urlIntent, 0);
+        boolean isIntentSafe = activities.size() > 0;
+        if (isIntentSafe) {
+            startActivity(urlIntent);
+        }
+    }
+
+    @Override
+    public void compareIdForFav(List<String> favDocsId) {
+        List<Doc> favDocsList = new ArrayList<>();
+        for (String favDocId: favDocsId){
+            for (Doc doc:allDocList){
+                if (favDocId.equals(doc.getId()))favDocsList.add(doc);
+            }
+        }
+        mDoc = 0;
+        setDataToRecyclerView(favDocsList);
+    }
+
+    @Override
+    public void onResponseFailure(Throwable throwable) {
+
+    }
+
 
     @Override
     public void showProgress() {
@@ -129,19 +143,6 @@ public class AllDocsListFragment extends Fragment implements MainContract.MainVi
 
     @Override
     public void hideProgress() {
-
-    }
-
-    @Override
-    public void setDataToRecyclerView(List<Doc> noticeArrayList) {
-
-        AllDocsListAdapter adapter = new AllDocsListAdapter(noticeArrayList , getActivity().getFragmentManager(), recyclerItemClickListener);
-        listAllDocs.setAdapter(adapter);
-
-    }
-
-    @Override
-    public void onResponseFailure(Throwable throwable) {
 
     }
 

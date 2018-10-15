@@ -13,52 +13,30 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainContract.MainView {
 
     private ProgressBar progressBar;
 
-    //private MainContract.Presenter presenter;
+    private MainContract.Presenter presenter;
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private RecyclerView recyclerViewFastAccess;
 
-    private List<Doc> allDocs;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        allDocs = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Doc doc = new Doc();
-            doc.setName("документ");
-            doc.setDate("1.1.1.1");
-            doc.setSize("много");
-            allDocs.add(doc);
 
             setContentView(R.layout.activity_main);
 
             initialize();
             initProgressBar();
 
-            //presenter = new MainPresenterImpl(this, new GetNoticeIntractorImpl());
-            //presenter.requestDataFromServer();
-
-
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setDisplayHomeAsUpEnabled(true);
-
-
-        }
-    }
-
-    public List<Doc> getAllDocs() {
-        return allDocs;
+            presenter = new MainPresenterImpl(this, new GetDocsInteractorImpl());
+            presenter.requestDocsListFromServer();
     }
 
     private void initialize() {
@@ -72,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
 
         recyclerViewFastAccess = findViewById(R.id.recycler_fast_access_docs);
         recyclerViewFastAccess.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewFastAccess.setAdapter(new FastAccessRecyclerViewAdapter(this, allDocs, recyclerItemClickListener));
     }
 
     private void initProgressBar() {
@@ -88,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
 
         this.addContentView(relativeLayout, params);
     }
-
-
     /**
      * RecyclerItem click event listener
      */
@@ -132,30 +107,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //presenter.onDestroy();
+        presenter.onDestroy();
     }
 }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_refresh) {
-//            Presenter.onRefreshButtonClick();
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
 

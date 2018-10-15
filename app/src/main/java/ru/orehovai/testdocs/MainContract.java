@@ -1,6 +1,5 @@
 package ru.orehovai.testdocs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface MainContract {
@@ -14,7 +13,11 @@ public interface MainContract {
 
 //        void onRefreshButtonClick();
 
-        void requestDataFromServer();
+        void requestDocsListFromServer();
+
+        void requestDocFromServer(String docId);
+
+        void requestFavDocsListFromServer();
 
     }
 
@@ -28,22 +31,37 @@ public interface MainContract {
 
         void hideProgress();
 
-        void setDataToRecyclerView(List<Doc> noticeArrayList);
+        void setDataToRecyclerView(List<Doc> docsArrayList);
 
         void onResponseFailure(Throwable throwable);
+
+    }
+
+    interface ItemListView {
+
+        void openDocInBrowser(Doc doc);
+
+        void onResponseFailure(Throwable throwable);
+
+        void compareIdForFav(List<String> favDocsId);
 
     }
 
     /**
      * Intractors are classes built for fetching data from your database, web services, or any other data source.
      **/
-    interface GetNoticeIntractor {
+    interface GetDocInteractor {
 
         interface OnFinishedListener {
-            void onFinished(List<Doc> noticeArrayList);
+            void onGetAllFinished(List<Doc> allDocsList);
+            void onGetDocFinished(Doc doc);
+            void onGetFavFinished(List<String> favDocList);
             void onFailure(Throwable t);
         }
 
-        void getNoticeArrayList(OnFinishedListener onFinishedListener);
+        void getDocsArrayList(OnFinishedListener onFinishedListener);
+        void getDoc(OnFinishedListener onFinishedListener, String docId);
+        void getFavDocsList(OnFinishedListener onFinishedListener);
+
     }
 }

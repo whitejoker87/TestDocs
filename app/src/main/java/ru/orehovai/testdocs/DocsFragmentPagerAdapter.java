@@ -20,11 +20,11 @@ public class DocsFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return AllDocsListFragment.newInstance(position + 1);
+                return AllDocsListFragment.newInstance(position);
             case 1:
                 return new DummyFragment();
             case 2:
-                return new DummyFragment();
+                return AllDocsListFragment.newInstance(position);
             default:
                 break;
         }

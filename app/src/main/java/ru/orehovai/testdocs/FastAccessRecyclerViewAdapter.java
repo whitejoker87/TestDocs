@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class FastAccessRecyclerViewAdapter extends RecyclerView.Adapter<FastAccessRecyclerViewAdapter.FastAccessHolder> {
@@ -32,8 +34,12 @@ public class FastAccessRecyclerViewAdapter extends RecyclerView.Adapter<FastAcce
 
     @Override
     public void onBindViewHolder(@NonNull FastAccessHolder holder, @SuppressLint("RecyclerView") final int position) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM HH:mm");
+        String date = "Открыто " + sdf.format(Calendar.getInstance().getTime());
+
         holder.tvFileName.setText(fastAcessDocs.get(position).getName());
-        holder.tvDate.setText(fastAcessDocs.get(position).getDate());
+        holder.tvDate.setText(date);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

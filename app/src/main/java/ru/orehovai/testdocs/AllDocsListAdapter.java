@@ -12,12 +12,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class AllDocsListAdapter extends RecyclerView.Adapter<AllDocsListAdapter.DocHolder> {
 
-    DocDialogFragment dialogFragment;
-    FragmentManager fragmentManager;
+    private DocDialogFragment dialogFragment;
+    private FragmentManager fragmentManager;
 
     private List<Doc> allDocs;
     private Context context;
@@ -42,9 +44,16 @@ public class AllDocsListAdapter extends RecyclerView.Adapter<AllDocsListAdapter.
     @Override
     public void onBindViewHolder(@NonNull DocHolder holder, @SuppressLint("RecyclerView") final int position) {
 
-        holder.tvTitle.setText(allDocs.get(position).getName());
-        holder.tvDate.setText(allDocs.get(position).getDate());
-        holder.tvSize.setText(allDocs.get(position).getDate());
+        Doc doc = allDocs.get(position);
+        String fullFileName = doc.getName() + "." + doc.getType();
+        String size = "100 Гб";
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        String date = sdf.format(Calendar.getInstance().getTime());
+
+        holder.tvTitle.setText(fullFileName);
+        holder.tvDate.setText(date);
+        holder.tvSize.setText(size);
         final Button btnDetails = holder.btnDetails;
         holder.btnDetails.setOnClickListener(new View.OnClickListener() {
             @Override
