@@ -23,7 +23,7 @@ public interface DocsListContract extends BaseContract {
      * while the setDataToRecyclerView and onResponseFailure is fetched from the GetNoticeInteractorImpl class
      **/
 
-    interface ItemListView {
+    interface docsListView {
 
         void setDataToRecyclerView(List<Doc> docsArrayList);
 
@@ -32,6 +32,8 @@ public interface DocsListContract extends BaseContract {
         void onResponseFailure(Throwable throwable);
 
         void compareIdForFav(List<String> favDocsId);
+
+        void saveDocsListToFragment(List<Doc> docsList);
 
     }
 

@@ -1,4 +1,4 @@
-package ru.orehovai.testdocs.view;
+package ru.orehovai.testdocs.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
@@ -18,6 +18,8 @@ import java.util.List;
 
 import ru.orehovai.testdocs.model.Doc;
 import ru.orehovai.testdocs.R;
+import ru.orehovai.testdocs.view.DocDialogFragment;
+import ru.orehovai.testdocs.view.RecyclerItemClickListener;
 
 public class AllDocsListAdapter extends RecyclerView.Adapter<AllDocsListAdapter.DocHolder> {
 

@@ -20,6 +20,8 @@ import ru.orehovai.testdocs.contract.MainContract;
 import ru.orehovai.testdocs.presenter.MainPresenterImpl;
 import ru.orehovai.testdocs.R;
 import ru.orehovai.testdocs.model.interactor.GetDocsInteractorImpl;
+import ru.orehovai.testdocs.view.adapter.DocsFragmentPagerAdapter;
+import ru.orehovai.testdocs.view.adapter.FastAccessRecyclerViewAdapter;
 
 public class MainActivity extends AppCompatActivity implements MainContract.MainView {
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         setSupportActionBar(toolbar);
 
         viewPager = findViewById(R.id.pager);
+        //viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(new DocsFragmentPagerAdapter(getSupportFragmentManager(), MainActivity.this));
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);

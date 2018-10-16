@@ -1,4 +1,4 @@
-package ru.orehovai.testdocs.view;
+package ru.orehovai.testdocs.view.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

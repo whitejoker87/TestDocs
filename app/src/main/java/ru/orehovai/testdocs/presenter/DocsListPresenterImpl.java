@@ -7,10 +7,10 @@ import ru.orehovai.testdocs.contract.DocsListContract;
 
 public class DocsListPresenterImpl implements DocsListContract.Presenter, DocsListContract.GetDocInteractor.OnFinishedListener {
 
-    private DocsListContract.ItemListView docsListView;
+    private DocsListContract.docsListView docsListView;
     private DocsListContract.GetDocInteractor getDocInteractor;
 
-    public DocsListPresenterImpl(DocsListContract.ItemListView docsListView, DocsListContract.GetDocInteractor getDocInteractor) {
+    public DocsListPresenterImpl(DocsListContract.docsListView docsListView, DocsListContract.GetDocInteractor getDocInteractor) {
         this.getDocInteractor = getDocInteractor;
         this.docsListView = docsListView;
     }
@@ -40,7 +40,7 @@ public class DocsListPresenterImpl implements DocsListContract.Presenter, DocsLi
     @Override
     public void onGetAllFinished(List<Doc> allDocList) {
         if(docsListView != null){
-            docsListView.setDataToRecyclerView(allDocList);
+            docsListView.saveDocsListToFragment(allDocList);
         }
     }
 

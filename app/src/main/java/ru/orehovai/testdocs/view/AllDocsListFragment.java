@@ -23,15 +23,17 @@ import ru.orehovai.testdocs.contract.DocsListContract;
 import ru.orehovai.testdocs.presenter.DocsListPresenterImpl;
 import ru.orehovai.testdocs.model.interactor.GetDocsInteractorImpl;
 import ru.orehovai.testdocs.R;
+import ru.orehovai.testdocs.view.adapter.AllDocsListAdapter;
 
 
-public class AllDocsListFragment extends Fragment implements DocsListContract.ItemListView {
+public class AllDocsListFragment extends Fragment implements DocsListContract.docsListView {
 
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private RecyclerView recyclerAllDocs;
 
     private List<Doc> allDocList;
+    private List<Doc> favDocList;
 
     private int numOfTab;
 
@@ -51,7 +53,10 @@ public class AllDocsListFragment extends Fragment implements DocsListContract.It
         if (getArguments() != null) {
             numOfTab = getArguments().getInt(ARG_PAGE);
         }
+        allDocList = new ArrayList<>();
+        favDocList = new ArrayList<>();
         presenter = new DocsListPresenterImpl(this, new GetDocsInteractorImpl());
+        presenter.requestDocsListFromServer();
     }
 
     @Override
@@ -74,7 +79,16 @@ public class AllDocsListFragment extends Fragment implements DocsListContract.It
         recyclerAllDocs = Objects.requireNonNull(getActivity()).findViewById(R.id.recycler_docs);
         recyclerAllDocs.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        presenter.requestDocsListFromServer();
+        switch (numOfTab) {
+            case 0:
+                if (allDocList.size() > 0)
+                    setDataToRecyclerView(allDocList);
+                break;
+            case 2:
+                if (favDocList.size() > 0)
+                    setDataToRecyclerView(favDocList);
+                break;
+        }
     }
 
     /**
@@ -91,14 +105,13 @@ public class AllDocsListFragment extends Fragment implements DocsListContract.It
 
     @Override
     public void setDataToRecyclerView(List<Doc> allDocsList) {
-        if (numOfTab == 2) {
-            allDocList = allDocsList;
-            presenter.requestFavDocsListFromServer();
-            return;
-        }
-
         AllDocsListAdapter adapter = new AllDocsListAdapter(allDocsList , Objects.requireNonNull(getActivity()).getFragmentManager(), recyclerItemClickListener);
         recyclerAllDocs.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+//        if (numOfTab == 2) {
+//            presenter.requestFavDocsListFromServer();
+//        }
 
     }
 
@@ -121,19 +134,31 @@ public class AllDocsListFragment extends Fragment implements DocsListContract.It
 
     @Override
     public void compareIdForFav(List<String> favDocsId) {
-        List<Doc> favDocsList = new ArrayList<>();
         for (String favDocId: favDocsId){
             for (Doc doc:allDocList){
-                if (favDocId.equals(doc.getId()))favDocsList.add(doc);
+                if (favDocId.equals(doc.getId()))favDocList.add(doc);
             }
         }
-        numOfTab = 0;
-        setDataToRecyclerView(allDocList);
+        switch (numOfTab) {
+            case 0:
+                if (allDocList.size() > 0)
+                    setDataToRecyclerView(allDocList);
+                break;
+            case 2:
+                if (favDocList.size() > 0)
+                    setDataToRecyclerView(favDocList);
+                break;
+        }
+    }
+
+    @Override
+    public void saveDocsListToFragment(List<Doc> docsList) {
+        allDocList = docsList;
+        presenter.requestFavDocsListFromServer();
     }
 
     @Override
     public void onResponseFailure(Throwable throwable) {
 
     }
-
 }
