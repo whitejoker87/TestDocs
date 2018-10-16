@@ -1,4 +1,4 @@
-package ru.orehovai.testdocs;
+package ru.orehovai.testdocs.view;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import ru.orehovai.testdocs.R;
 
 public class DummyFragment extends Fragment {
 

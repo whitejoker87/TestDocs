@@ -1,4 +1,4 @@
-package ru.orehovai.testdocs;
+package ru.orehovai.testdocs.model.interactor;
 
 import android.util.Log;
 
@@ -7,13 +7,18 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.orehovai.testdocs.contract.BaseContract;
+import ru.orehovai.testdocs.model.api.Client;
+import ru.orehovai.testdocs.model.Doc;
+import ru.orehovai.testdocs.contract.DocsListContract;
+import ru.orehovai.testdocs.model.api.IApi;
 
-public class GetDocsInteractorImpl implements MainContract.GetDocInteractor {
+public class GetDocsInteractorImpl implements BaseContract.GetDocInteractor, DocsListContract.GetDocInteractor {
 
     IApi api = Client.getInstance().getApi();
 
     @Override
-    public void getDocsArrayList(final OnFinishedListener onFinishedListener) {
+    public void getDocsArrayList(final BaseContract.GetDocInteractor.OnFinishedListener onFinishedListener) {
 
         /** Create handle for the RetrofitInstance interface*/
         //IApi api = Client.getInstance().getApi();
@@ -39,7 +44,7 @@ public class GetDocsInteractorImpl implements MainContract.GetDocInteractor {
     }
 
     @Override
-    public void getDoc(final OnFinishedListener onFinishedListener, String docId) {
+    public void getDoc(final DocsListContract.GetDocInteractor.OnFinishedListener onFinishedListener, String docId) {
 
         Call<Doc> call = api.getDoc(docId);
         call.enqueue(new Callback<Doc>() {
@@ -58,7 +63,7 @@ public class GetDocsInteractorImpl implements MainContract.GetDocInteractor {
     }
 
     @Override
-    public void getFavDocsList(final OnFinishedListener onFinishedListener) {
+    public void getFavDocsList(final DocsListContract.GetDocInteractor.OnFinishedListener onFinishedListener) {
         Call<List<String>> call = api.getFavDocs();
         call.enqueue(new Callback<List<String>>() {
             @Override

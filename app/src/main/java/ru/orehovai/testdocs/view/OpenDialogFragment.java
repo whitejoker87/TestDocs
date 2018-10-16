@@ -1,4 +1,4 @@
-package ru.orehovai.testdocs;
+package ru.orehovai.testdocs.view;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+
+import ru.orehovai.testdocs.R;
 
 
 ///**

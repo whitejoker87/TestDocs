@@ -1,4 +1,4 @@
-package ru.orehovai.testdocs;
+package ru.orehovai.testdocs.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,6 +12,9 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+
+import ru.orehovai.testdocs.model.Doc;
+import ru.orehovai.testdocs.R;
 
 public class FastAccessRecyclerViewAdapter extends RecyclerView.Adapter<FastAccessRecyclerViewAdapter.FastAccessHolder> {
 

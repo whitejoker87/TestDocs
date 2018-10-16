@@ -1,4 +1,4 @@
-package ru.orehovai.testdocs;
+package ru.orehovai.testdocs.view;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,16 +12,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import ru.orehovai.testdocs.model.Doc;
+import ru.orehovai.testdocs.contract.DocsListContract;
+import ru.orehovai.testdocs.presenter.DocsListPresenterImpl;
+import ru.orehovai.testdocs.model.interactor.GetDocsInteractorImpl;
+import ru.orehovai.testdocs.R;
 
 
-public class AllDocsListFragment extends Fragment implements MainContract.MainView, MainContract.ItemListView {
+public class AllDocsListFragment extends Fragment implements DocsListContract.ItemListView {
 
     public static final String ARG_PAGE = "ARG_PAGE";
 
@@ -29,9 +33,9 @@ public class AllDocsListFragment extends Fragment implements MainContract.MainVi
 
     private List<Doc> allDocList;
 
-    private int mDoc;
+    private int numOfTab;
 
-    private MainContract.Presenter presenter;
+    private DocsListContract.Presenter presenter;
 
     public static AllDocsListFragment newInstance(int page) {
         AllDocsListFragment fragment = new AllDocsListFragment();
@@ -45,9 +49,9 @@ public class AllDocsListFragment extends Fragment implements MainContract.MainVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mDoc = getArguments().getInt(ARG_PAGE);
+            numOfTab = getArguments().getInt(ARG_PAGE);
         }
-        presenter = new MainPresenterImpl(this, this, new GetDocsInteractorImpl());
+        presenter = new DocsListPresenterImpl(this, new GetDocsInteractorImpl());
     }
 
     @Override
@@ -71,10 +75,6 @@ public class AllDocsListFragment extends Fragment implements MainContract.MainVi
         recyclerAllDocs.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         presenter.requestDocsListFromServer();
-        if (mDoc == 2){
-            presenter.requestFavDocsListFromServer();
-        }
-
     }
 
     /**
@@ -91,8 +91,9 @@ public class AllDocsListFragment extends Fragment implements MainContract.MainVi
 
     @Override
     public void setDataToRecyclerView(List<Doc> allDocsList) {
-        if (mDoc == 2) {
+        if (numOfTab == 2) {
             allDocList = allDocsList;
+            presenter.requestFavDocsListFromServer();
             return;
         }
 
@@ -126,23 +127,12 @@ public class AllDocsListFragment extends Fragment implements MainContract.MainVi
                 if (favDocId.equals(doc.getId()))favDocsList.add(doc);
             }
         }
-        mDoc = 0;
-        setDataToRecyclerView(favDocsList);
+        numOfTab = 0;
+        setDataToRecyclerView(allDocList);
     }
 
     @Override
     public void onResponseFailure(Throwable throwable) {
-
-    }
-
-
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
 
     }
 

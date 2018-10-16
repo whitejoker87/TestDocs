@@ -1,4 +1,4 @@
-package ru.orehovai.testdocs;
+package ru.orehovai.testdocs.view;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -14,6 +14,12 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.List;
+
+import ru.orehovai.testdocs.model.Doc;
+import ru.orehovai.testdocs.contract.MainContract;
+import ru.orehovai.testdocs.presenter.MainPresenterImpl;
+import ru.orehovai.testdocs.R;
+import ru.orehovai.testdocs.model.interactor.GetDocsInteractorImpl;
 
 public class MainActivity extends AppCompatActivity implements MainContract.MainView {
 

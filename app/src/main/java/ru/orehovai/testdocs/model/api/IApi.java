@@ -1,10 +1,11 @@
-package ru.orehovai.testdocs;
+package ru.orehovai.testdocs.model.api;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import ru.orehovai.testdocs.model.Doc;
 
 public interface IApi {
 
